@@ -2,6 +2,7 @@
 
 namespace JulianBustamante\Plaid;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use JulianBustamante\Plaid\Exceptions\InvalidEnvironmentException;
 use JulianBustamante\Plaid\Traits\InstantiatorTrait;
@@ -13,18 +14,7 @@ use JulianBustamante\Plaid\Traits\InstantiatorTrait;
  */
 abstract class ServiceAbstract
 {
-
     use InstantiatorTrait;
-
-    /**
-     * Default timeout for API requests.
-     */
-    public const DEFAULT_TIMEOUT = 600;
-
-    /**
-     * Default Plaid API Version.
-     */
-    public const DEFAULT_API_VERSION = '2018-05-22';
 
     /**
      * Plaid API environments.
@@ -64,32 +54,11 @@ abstract class ServiceAbstract
     private $secret;
 
     /**
-     * Your Plaid public key.
-     *
-     * @var string
-     */
-    private $public_key;
-
-    /**
      * One of sandbox, development, or production.
      *
      * @var string
      */
     private $environment;
-
-    /**
-     * Suppress Plaid warnings.
-     *
-     * @var bool
-     */
-    private $suppress_warnings;
-
-    /**
-     * Timeout for API requests.
-     *
-     * @var int
-     */
-    private $timeout;
 
     /**
      * Plaid API Version.
@@ -103,30 +72,23 @@ abstract class ServiceAbstract
      *
      * @param $client_id
      * @param $secret
-     * @param $public_key
      * @param $environment
-     * @param bool $suppress_warnings
-     * @param $timeout
      * @param $api_version
      */
     public function __construct(
         $client_id,
         $secret,
-        $public_key,
         $environment,
-        $suppress_warnings = false,
-        $timeout = self::DEFAULT_TIMEOUT,
-        $api_version = self::DEFAULT_API_VERSION
+        $api_version = null
     ) {
         $this->isValidEnvironment($environment);
 
         $this->client_id   = $client_id;
         $this->secret      = $secret;
-        $this->public_key  = $public_key;
         $this->environment = $environment;
-        $this->timeout     = $timeout;
         $this->api_version = $api_version;
-        $this->suppress_warnings = $suppress_warnings;
+
+        $this->initializeHttpClient();
     }
 
     /**
@@ -191,4 +153,17 @@ abstract class ServiceAbstract
      */
     abstract public static function getValidResources(): array;
 
+    /**
+     * Initializes the Http Client.
+     */
+    private function initializeHttpClient(): void
+    {
+        $config = ['base_uri' => $this->getBaseUri()];
+
+        if (null !== $this->api_version) {
+            $config += ['headers' => ['Plaid-Version' => $this->api_version]];
+        }
+
+        $this->client = new Client($config);
+    }
 }

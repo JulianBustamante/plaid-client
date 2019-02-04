@@ -18,6 +18,11 @@ abstract class ResourceAbstract
     protected $plaid;
 
     /**
+     * Guzzle Response.
+     */
+    protected $response;
+
+    /**
      * @param \JulianBustamante\Plaid\ServiceAbstract $plaid
      */
     public function __construct(ServiceAbstract $plaid)
@@ -30,17 +35,17 @@ abstract class ResourceAbstract
      *
      * @param \Closure $callback
      *
-     * @return mixed
+     * @return \JulianBustamante\Plaid\Resources\ResourceAbstract
      */
-    protected function handleRequest(\Closure $callback)
+    protected function handleRequest(\Closure $callback): ResourceAbstract
     {
         try {
-            $response = $callback($this->plaid->getClient());
+            $this->response = $callback($this->plaid->getClient());
         } catch (ClientException $exception) {
             $this->handleException($exception);
         }
 
-        return \GuzzleHttp\json_decode($response->getBody(), true);
+        return $this;
     }
 
     /**
@@ -48,7 +53,7 @@ abstract class ResourceAbstract
      *
      * @param \GuzzleHttp\Exception\ClientException $exception
      */
-    protected function handleException(ClientException $exception)
+    protected function handleException(ClientException $exception): void
     {
         if ($exception->getCode() === 400
             && $exception->hasResponse()
@@ -66,6 +71,8 @@ abstract class ResourceAbstract
     }
 
     /**
+     * Extracts the Plaid error code from the response.
+     *
      * @param $response
      *
      * @return bool
@@ -74,5 +81,38 @@ abstract class ResourceAbstract
     {
         $body = \GuzzleHttp\json_decode($response->getBody(), true);
         return $body['error_code'] ?? null;
+    }
+
+    /**
+     * Returns base data required for all the requests.
+     *
+     * @param $access_token
+     * @param $account_ids
+     *
+     * @return array
+     */
+    protected function getBaseDataWithAccounts($access_token, array $account_ids): array
+    {
+        $data = [
+            'json' => [
+                    'access_token' => $access_token,
+                ] + $this->plaid->getAPIKeys(),
+        ];
+
+        if (! empty($account_ids)) {
+            $data['json']['options']['account_ids'] = $account_ids;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Returns decoded json response.
+     *
+     * @return mixed
+     */
+    protected function getData()
+    {
+        return $this->response !== null ? \GuzzleHttp\json_decode($this->response->getBody(), true) : null;
     }
 }

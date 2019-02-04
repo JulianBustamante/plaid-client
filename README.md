@@ -14,14 +14,14 @@ PHP Client for the plaid.com API
 Via Composer
 
 ``` bash
-$ composer require julianbustamante/plaid-client
+$ composer require JulianBustamante/plaid-client
 ```
 
 ## Usage
 
 ``` php
 try {
-    $plaid = new Plaid($client_id, $secret, $public_key, $environment);
+    $plaid = new Plaid($client_id, $secret, $environment);
     $response = $plaid->exchange($public_token);
 } catch (PlaidException $e) {
     // Handle
@@ -52,13 +52,13 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 [ico-version]: https://img.shields.io/packagist/v/julianbustamante/plaid-client.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/julianbustamante/plaid-client/master.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/JulianBustamante/plaid-client/master.svg?style=flat-square
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/julianbustamante/plaid-client.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/julianbustamante/plaid-client.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/julianbustamante/plaid-client.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/julianbustamante/plaid-client
-[link-travis]: https://travis-ci.org/julianbustamante/plaid-client
+[link-travis]: https://travis-ci.com/JulianBustamante/plaid-client
 [link-scrutinizer]: https://scrutinizer-ci.com/g/julianbustamante/plaid-client/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/julianbustamante/plaid-client
 [link-downloads]: https://packagist.org/packages/julianbustamante/plaid-client

@@ -3,7 +3,7 @@
     "type": "library",
     "description": "PHP API Client for Plaid.com",
     "keywords": [
-        "api", "plaid", "julianbustamante", "plaid-client"
+        "api", "plaid", "plaid-client"
     ],
     "homepage": "https://github.com/julianbustamante/plaid-client",
     "license": "MIT",

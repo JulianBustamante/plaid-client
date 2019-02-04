@@ -2,8 +2,6 @@
 
 namespace JulianBustamante\Plaid\Traits;
 
-use GuzzleHttp\Client;
-
 /**
  * The Instantiator trait which has the magic methods for instantiating Resources
  * @package JulianBustamante\Plaid
@@ -29,9 +27,6 @@ trait InstantiatorTrait
         if (array_key_exists($method, $validResources = $this::getValidResources())) {
             $className = $validResources[$method];
             $instance = new $className($this);
-
-            // Set the http client if it has not been set yet, this package uses Guzzle by default.
-            $this->client ?? ($this->client = new Client(['base_uri' => $this->getBaseUri()]));
         } else {
             throw new \BadMethodCallException("No method called $method available in " . __CLASS__);
         }

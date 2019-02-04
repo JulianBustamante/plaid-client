@@ -17,18 +17,10 @@ use GuzzleHttp\ClientInterface;
  */
 class Auth extends ResourceAbstract
 {
-    public function auth($access_token, $account_ids = [])
+    public function auth($access_token, array $account_ids = [])
     {
         return $this->handleRequest(function (ClientInterface $client) use ($access_token, $account_ids) {
-            $data = [
-                'json' => [
-                    'access_token' => $access_token,
-                ] + $this->plaid->getAPIKeys(),
-            ];
-
-            if ($account_ids) {
-                $data['json']['options']['account_ids'] = $account_ids;
-            }
+            $data = $this->getBaseDataWithAccounts($access_token, $account_ids);
 
             return $client->post('/auth/get', $data);
         });
