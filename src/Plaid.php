@@ -32,14 +32,6 @@ class Plaid extends ServiceAbstract
             'auth' => Auth::class,
             'exchange' => Exchange::class,
             'balance' => Balance::class,
-            /*'info' => Info::class,
-            'risk' => Risk::class,
-            'income' => Income::class,
-            'balance' => Balance::class,
-            'connect' => Connect::class,
-            'upgrade' => Upgrade::class,
-            'categories' => Categories::class,
-            'institutions' => Institutions::class,*/
         ];
     }
 }
